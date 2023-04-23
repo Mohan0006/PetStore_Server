@@ -1,0 +1,132 @@
+[
+    {
+        "name" : "Pet Fur Hair Remover",
+        "price" : "45.89",
+        "description" : "Reusable Pet Fur Hair Remover with Self - Cleaning Base",
+        "ratings" : 4.5,
+        "images" : [{
+            "public_id" : "products/dsvbpny402gelwugv2le",
+            "url" : "https://res.cloudinary.com/bookit/image/upload/v1608062030/products/dsvbpny402gelwugv2le.jpg"
+        }],
+        "category" : "Accessories",
+        "animal" : "Cat",
+        "stock" : 50,
+        "numOfReviews" : 32,
+        "reviews": []
+    },
+    {
+        "name" : "Omega 3 Supplement",
+        "price" : "315.00",
+        "description" : "better health",
+        "ratings" : 1.65,
+        "images" : [{
+            "public_id" : "products/61oXGZ60GfL_fixco9",
+            "url" : "https://res.cloudinary.com/bookit/image/upload/v1614877995/products/61oXGZ60GfL_fixco9.jpg"
+        }],
+        "category" : "Medicines",
+        "animal" : "Cat",
+        "stock" : 0,
+        "numOfReviews" : 2,
+        "reviews": []
+    },
+    {
+        "name" : "pfoten-pfledge-spary",
+        "price" : "26.99 ",
+        "description" : "spary for dogs",
+        "ratings" : 3.5,
+        "images" : [{
+            "public_id" : "products/chairmount_nuubea",
+            "url" : "https://res.cloudinary.com/bookit/image/upload/v1606231285/products/chairmount_nuubea.jpg"
+        }],
+        "category" : "Medicines",
+        "animal" : "Dog",
+        "stock" : 1,
+        "numOfReviews" : 12,
+        "reviews": []
+    },
+    {
+        "name" : "Pedigree Adult",
+        "price" : "150",
+        "description" : "Pedigree Adult Dry Dog Food- Meat & Rice, 1.2kg Pack ",
+        "ratings" : 4.5,
+        "images" : [{
+            "public_id" : "products/headphones_t2afnb",
+            "url" : "https://res.cloudinary.com/bookit/image/upload/v1606231281/products/headphones_t2afnb.jpg"
+        }],
+        "category" : "Food",
+        "animal" : "Dog",
+        "stock" : 11,
+        "numOfReviews" : 112,
+        "reviews": []
+    },
+    {
+        "name" : "Blanket",
+        "price" : "126.99 ",
+        "description" : "Blanket for Dogs Cats, Warm Flannel Plush Pet Bed Blanket Reversible Black (Small)",
+        "ratings" : 4.8,
+        "images" : [{
+            "public_id" : "products/dog1",
+            "url" : "https://res.cloudinary.com/dzigorjli/image/upload/v1665051516/petstore/dog1.webp"
+        }],
+        "category" : "Accessories",
+        "animal" : "Dog",
+        "stock" : 122,
+        "numOfReviews" : 2671,
+        "reviews": []
+    },
+    {
+        "name" : "MASHKI Super Fish Food for All Tropical Fish",
+        "price" : "27.99",
+        "description" : "ASHKI Super Fish Food for All Tropical Fish ",
+        "ratings" : 4.1,
+        "images" : [{
+            "public_id" : "products/eahhtj1bkn1k9gjgd3hn",
+            "url" : "https://res.cloudinary.com/bookit/image/upload/v1606233125/products/eahhtj1bkn1k9gjgd3hn.jpg"
+        }],
+        "category" : "Food",
+        "animal" : "Fish",
+        "stock" : 1123,
+        "numOfReviews" : 6,
+        "reviews": []
+    },
+    {
+        "name" : "fish tank",
+        "price" : "496.95",
+        "description" : "CUBE FRAMELESS TANK 30×30 93GAL",
+        "ratings" : 4.7,
+        "images" : [{
+            "public_id" : "products/camera_ridc0i",
+            "url" : "https://res.cloudinary.com/bookit/image/upload/v1606231283/products/camera_ridc0i.jpg"
+        }],
+        "category" : "Accessories",
+        "animal" : "Fish",
+        "stock" : 131,
+        "numOfReviews" : 222,
+        "reviews": []
+    },
+    {
+        "name" : "Dry Cat Food",
+        "price" : "2.75",
+        "description" : "Whiskas Tuna Adult Dry Cat Food",
+        "ratings" : 5,
+        "images" : [
+            {
+                "public_id" : "products/wmoa49q9e70ze9xtcra2",
+                "url" : "https://res.cloudinary.com/bookit/image/upload/v1606293153/products/wmoa49q9e70ze9xtcra2.jpg"
+            },
+            {
+                "public_id" : "products/i0k1wdwi5hrpmzwxvsds",
+                "url" : "https://res.cloudinary.com/bookit/image/upload/v1606293152/products/i0k1wdwi5hrpmzwxvsds.jpg" 
+            },
+            {
+                "public_id" : "products/bshmuo9qisfhz4azvnsd",
+                "url" : "https://res.cloudinary.com/bookit/image/upload/v1606293153/products/bshmuo9qisfhz4azvnsd.jpg"
+            }
+    ],
+        "category" : "Food",
+        "animal" : "Cat",
+        "stock" : 500,
+        "numOfReviews" : 1,
+        "reviews": []
+    }
+]
