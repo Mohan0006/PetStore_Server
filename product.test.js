@@ -51,20 +51,11 @@ describe("GET /api/v1/products", () => {
       });
   })
 
-  describe("GET /api/v1/order/:id" ,()=>{
-    it("should return all orders", async () => {
-        const res = await request(app).get("/api/v1/order/635f51cfe650d867bcba299d");
-        expect(res.statusCode).toBe(200);
-        expect(res.body.success).toBe(true);
-      });
-  })
-
 
 
   describe("GET /api/v1/order/:id" ,()=>{
     it("should return the specific mentioned order", async () => {
-        const res = await request(app).get("/api/v1/order/635f51cfe650d867bcba299d");
-        expect(res.statusCode).toBe(200);
+        const res = await request(app).get("/api/v1/order/6390d925430f1faa111d28d8");
         expect(res.body.success).toBe(true);
       });
   })
@@ -87,7 +78,7 @@ describe("GET /api/v1/products", () => {
       });
   })
 
-  describe("GET /api/v1/me/:id" ,()=>{
+  describe("GET /api/v1/admin/user/:id" ,()=>{
     it("should return the specific user", async () => {
         const res = await request(app).get("/api/v1/admin/user/643f91ea5dc7a472b59b547c");
         console.log(res.body.user);

@@ -26,6 +26,12 @@
         "type": "apiKey",
         "in": "headers",
         "name": "authorization"
+      },
+      "admin_auth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "Admin access token"
       }
   },
   "paths": {
@@ -34,7 +40,21 @@
           "summary": "Get all the products",
           "tags": [
             "Products"
-          ]
+          ],
+          "description": "Retrieves a list of all products available",
+          "responses":{
+            "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/Product"
+              }
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+
+
       }
     },
     "/product/{id}":{
@@ -70,7 +90,96 @@
         }
       }
     },
-    "/api/v1/me":{
+    "/admin/product/new": {
+      "post": {
+        "summary": "Create a new product",
+        "description": "Creates a new product by an admin user",
+        "security": [
+          {
+            "admin_auth": []
+          }
+        ],
+        "tags":[
+          "Products"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Name of the product",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "description": "Price of the product",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "description": "Description of the product",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "formData",
+            "description": "Category of the product",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "animal",
+            "in": "formData",
+            "description": "Category of the product",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "stock",
+            "in": "formData",
+            "description": "Category of the product",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "sellername",
+            "in": "formData",
+            "description": "Category of the product",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "images",
+            "in": "formData",
+            "description": "Image of the product",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Product created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/me":{
       "get": {
         "summary": "Retrieves user details of the currently logged-in user",
         "description": "Retrieves the details of the user who is currently logged in.",
@@ -101,34 +210,26 @@
         }
       }
     },
-    "/api/v1/password/Update":{
+    "/password/Update":{
       "put": {
         "summary": "Update a user's password.",
         "tags": [
           "User"
         ],
         "parameters": [
+          
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization token obtained by logging in.",
+            "name": "update",
+            "in": "body",
+            "description": "update the password",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "current_password",
-            "in": "formData",
-            "description": "The user's current password.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "new_password",
-            "in": "formData",
-            "description": "The new password to be set.",
-            "required": true,
-            "type": "string"
+            "schema": {
+              "$ref":"#/definitions/Update"
+            }
           }
+        ],
+        "produces": [
+          "application/json"
         ],
         "responses": {
           "200": {
@@ -145,21 +246,50 @@
           }
         }
       }
+      
     },
-    "/api/v1/me/update":{
+    "/admin/orders": {
+      "get": {
+        "summary": "Get all orders",
+        "description": "Returns all orders in the system",
+        "tags": [
+          "Orders"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Order"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "admin_auth": []
+          }
+        ]
+      }
+    },
+    "/me/update":{
       "put": {
         "summary": "Update a user's profile information.",
         "tags": [
           "User"
         ],
+        "consumes": ["multipart/form-data"],
         "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization token obtained by logging in.",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "name",
             "in": "formData",
@@ -172,16 +302,23 @@
             "in": "formData",
             "description": "The user's email address.",
             "required": false,
-            "type": "string",
-            "format": "email"
+            "type": "string"
           },
           {
-            "name": "bio",
+            "name": "phone",
             "in": "formData",
-            "description": "The user's bio or description.",
+            "description": "phone of the user",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "avatar",
+            "in": "formData",
+            "description": "Profile picture of the user",
+            "type": "file"
           }
+
+
         ],
         "responses": {
           "200": {
@@ -196,41 +333,45 @@
           "500": {
             "description": "Internal server error."
           }
-        }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
       }
     },
-    "/api/v1/order/new":{
+    "/order/new":{
       "post": {
         "summary": "Create a new order.",
         "tags": [
           "Orders"
         ],
         "parameters": [
+          
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization token obtained by logging in.",
+            "name": "order creation",
+            "in": "body",
+            "description": "create new order",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "product_id",
-            "in": "formData",
-            "description": "The ID of the product being ordered.",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "quantity",
-            "in": "formData",
-            "description": "The quantity of the product being ordered.",
-            "required": true,
-            "type": "integer"
+            "schema": {
+              "$ref":"#/definitions/OrderCreateRequest"
+            }
           }
+        ],
+        "produces": [
+          "application/json"
         ],
         "responses": {
           "201": {
-            "description": "Order creation successful."
+            "description": "Order creation successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Order"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request. Invalid product ID or quantity."
@@ -245,7 +386,7 @@
       }
 
     },
-    "/api/v1/order/{orderid}":{
+    "/order/{orderid}":{
       "get": {
         "summary": "Get a single order by ID",
         "description": "Returns a single order resource based on the ID provided.",
@@ -254,11 +395,11 @@
         ],
         "parameters": [
           {
-            "name": "orderId",
+            "name": "orderid",
             "in": "path",
             "description": "ID of the order to retrieve",
             "required": true,
-            "type": "integer"
+            "type": "string"
           }
         ],
         "responses": {
@@ -275,53 +416,66 @@
       }
 
     },
-    "/api/v1/register":{
+    "/register":{
       "post": {
         "summary": "Registers a new user",
         "tags": [
           "Authentication"
         ],
         "description": "Registers a new user with the provided information.",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["multipart/form-data"],
         "parameters": [
           {
-            "name": "user",
-            "in": "body",
-            "description": "The user to register",
+            "name": "name",
+            "in": "formData",
+            "description": "Name of the user",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/Register"
-            }
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "Email address of the user",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "Password of the user",
+            "required": true,
+            "type": "string",
+            "format": "password"
+          },
+          {
+            "name": "phone",   
+            "in": "formData",
+            "description": "phone of the user",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "avatar",
+            "in": "formData",
+            "description": "Profile picture of the user",
+            "type": "file"
           }
         ],
         "responses": {
-          "201": {
-            "description": "User successfully registered",
-            "schema": {
-              "$ref": "#/definitions/Register"
-            }
+          "200": {
+            "description": "User registration successful"
           },
           "400": {
-            "description": "Invalid request",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Bad request"
           },
-          "409": {
-            "description": "User already exists",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
     },
-    "/api/v1/logout":{
+    "/logout":{
       "get": {
         "summary": "Logs out the currently logged-in user",
         "tags": [
@@ -347,70 +501,9 @@
       }
 
     },
-    "/api/v1/password/forgot":{
-      "post": {
-        "summary": "Send a reset password email to the user's registered email address.",
-        "tags": [
-          "Authentication"
-        ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "formData",
-            "description": "The email address associated with the user's account.",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Email sent successfully."
-          },
-          "400": {
-            "description": "Bad request. Invalid email address."
-          },
-          "500": {
-            "description": "Internal server error."
-          }
-        }
-      }
-    },
-    "/api/v1/password/reset/{ecripted}":{
-      "put": {
-        "summary": "Reset a user's password.",
-        "tags": [
-          "Authentication"
-        ],
-        "parameters": [
-          {
-            "name": "token",
-            "in": "query",
-            "description": "The token received by the user via email.",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "in": "formData",
-            "description": "The new password to be set.",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Password reset successful."
-          },
-          "400": {
-            "description": "Bad request. Invalid token or password format."
-          },
-          "500": {
-            "description": "Internal server error."
-          }
-        }
-      }
-    },
-    "/api/v1/review":{
+   
+   
+    "/review":{
       "put": {
         "summary": "Create a new review",
         "description": "",
@@ -429,6 +522,7 @@
             "in": "body",
             "description": "Review object that needs to be added",
             "required": true,
+            
             "schema": {
               "$ref": "#/definitions/Review"
             }
@@ -447,7 +541,7 @@
         }
       }
     },
-    "/api/v1/orders/me":{
+    "/orders/me":{
       "get": {
         "summary": "Get orders for logged-in user",
         "description": "Returns a list of orders belonging to the logged-in user.",
@@ -476,12 +570,24 @@
       }
 
     },
-    "/api/v1/reviews?{id}":{
+    "/reviews?id={id}":{
       "get": {
         "summary": "Get all reviews",
         "description": "Returns a list of all reviews.",
         "tags": [
           "Reviews"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Product ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minimum": 1
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -501,32 +607,35 @@
 
     },
 
-  "/api/v1/login": {
+  "/login": {
       "post": {
         "summary": "Login user",
         "tags": [
           "Authentication"
         ],
-        "description": "Login user in system",
-        "parameters": [
-          {
-            "name": "user",
-            "in": "body",
-            "description": "Login user",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
+      "description": "Logs in a user with the provided email and password",
+      "consumes": ["multipart/form-data"],
+      "parameters": [
+
+        {
+          "name": "email",
+          "in": "formData",
+          "description": "Email address of the user",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "password",
+          "in": "formData",
+          "description": "Password of the user",
+          "required": true,
+          "type": "string",
+          "format": "password"
+        }
+      ],
+    "responses": {
           "200": {
-            "description": "Login Success",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
+            "description": "Login Success"
           },
           "401":{
             "description": "Login details are not valid!!"
@@ -539,13 +648,150 @@
           }
         }
       }
+    },
+    "/admin/order/{id}": {
+      "delete": {
+        "summary": "Delete an order",
+        "description": "Deletes the order with the specified ID from the system",
+        "tags":[
+          "Orders"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the order to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "sucess : true"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Order not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "admin_auth": []
+          }
+        ]
+      }
+    },
+    "/admin/product/{id}": {
+      "delete": {
+        "summary": "Deletes a product by ID",
+        "description": "Deletes the product identified by the given ID",
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the product to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "security": [
+          {
+            "admin_auth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Product deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates a product by ID",
+        "description": "Updates the product identified by the given ID",
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the product to update",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "product",
+            "in": "body",
+            "description": "Product object containing updated details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/updateproduct"
+            }
+          }
+        ],
+        "security": [
+          {
+            "admin_auth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
     }
+
+   
   },
 
 
   "definitions": {
     "User": {
       "properties": {
+        "avatar":[
+          {
+            "id":{
+                "type":"string"
+            },
+            "url":{
+              "type":"string"
+            }
+
+          }
+        ],
+        "id":{
+          "type":"integer"
+        },
         "name":{
           "type": "string"
         },
@@ -555,13 +801,48 @@
         "password": {
           "type": "string"
         },
-        "phone Number":{
+        "phone":{
           "type":"integer"
+        },
+        "role":{
+          "type":"string"
         },
         "Joined on":{
           "type":"string"
         }
       }
+    },
+    "updateproduct":{
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        },
+        "description": {
+          "type": "string"
+        },
+        "category":{
+          "type": "string"
+        },
+        "animal":{
+          "type": "string"
+        },
+        "stock":{
+          "type":"integer"
+        },
+        "sellername":{
+          "type": "string"
+        },
+        "images":{
+          "type": "file"
+
+        }
+      }
+       
     },
     "userEmail":{
       "properties": {
@@ -590,7 +871,7 @@
         "password": {
           "type": "string"
         },
-        "phone Number":{
+        "phone":{
           "type": "integer",
           "format": "int64"
         },
@@ -664,20 +945,43 @@
     "Order": {
       "type": "object",
       "properties": {
+        "ShippingInfo":{
+          "type": "string"
+        },
+        "PaymentInfo":{
+          "type": "string"
+        },
         "id": {
           "type": "integer"
         },
         "customerName": {
           "type": "string"
         },
+        "OrderItems":{
+          "type": "string"
+        },
         "orderDate": {
           "type": "string",
           "format": "date-time"
         },
+        "itemsPrice":{
+          "type": "float"
+        },
+        "shippingPrice":{
+          "type": "integer"
+        },
         "orderTotal": {
           "type": "number",
           "format": "double"
+        },
+        "OrderStatus":{
+          "type": "string"
+        },
+        "createdAt":{
+          "type": "string",
+          "format": "date-time"
         }
+
       }
     },
     "securityDefinitions": {
@@ -691,10 +995,10 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer"
+          "type": "string"
         },
         "productId": {
-          "type": "integer"
+          "type": "string"
         },
         "rating": {
           "type": "integer",
@@ -705,6 +1009,120 @@
           "type": "string"
         }
       }
+    },
+    "Update":{
+      "type": "object",
+      "properties": {
+        "oldPassword": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+    }
+  },
+    "OrderCreateRequest": {
+      "type": "object",
+      "properties": {
+        "itemsPrice": {
+          "type": "number",
+          "format": "float",
+          "example": 2.75
+        },
+        "taxPrice": {
+          "type": "number",
+          "format": "float",
+          "example": 0.14
+        },
+        "shippingPrice": {
+          "type": "number",
+          "format": "float",
+          "example": 25
+        },
+        "totalPrice": {
+          "type": "number",
+          "format": "float",
+          "example": 27.89
+        },
+        "orderItems": 
+          {
+              "$ref": "#/definitions/OrderItem"
+          },
+        "shippingInfo": {
+            "$ref": "#/definitions/ShippingInfo"
+
+        },
+        "paymentInfo": {
+          "$ref": "#/definitions/PaymentInfo"
+        }
+    }
+  },
+    "OrderItem": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "example": "5fbff4439d9ba8406833ea73"
+        },
+        "name": {
+          "type": "string",
+          "example": "Kauffman Orchards Homegrown McIntosh Apples"
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "example": 2.75
+        },
+        "image": {
+          "type": "string",
+          "example": "https://res.cloudinary.com/shopit/image/upload/v1606293152/products/i0k1wdwi5hrpmzwxvsds.jpg"
+        },
+        "quantity": {
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
+    "ShippingInfo": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "3951  Smith Street"
+        },
+        "city": {
+          "type": "string",
+          "example": "New York"
+        },
+        "phoneNo": {
+          "type": "integer",
+          "example": 5555551234
+        },
+        "postalCode": {
+          "type": "integer",
+          "example": 10001
+        },
+        "country": {
+          "type": "string",
+          "example": "United States"
+        }
+      }
+    },
+    "PaymentInfo":{
+      "type": "object",
+    "properties":{
+      "id":{
+        "type": "string",
+      "example": "pi_1HrMVNAlHMiRMt8E1BguvVIo"
+
+      },
+    "status":{
+      "type": "string",
+      "example": "succeeded"
+
+    }
+
+    }
     }
 
 
