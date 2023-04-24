@@ -1,13 +1,11 @@
 const Product = require('../models/product')
-
+const redis = require("redis");
 const ErrorHandler = require('../utils/errorHandler');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors') 
 const APIFeatures = require('../utils/apiFeatures');
 
 const cloudinary = require("cloudinary")
-
-
-
+const client = require('../config/redis');
 
 
 /**
@@ -46,75 +44,82 @@ const cloudinary = require("cloudinary")
 // Create new product => /api/v1/admin/product/new
 exports.newProduct = catchAsyncErrors(async(req,res,next) => {
     console.log("****************************** Create New Product *************************");
-
+    client.del("products")
     let images = []
-    if(req.body.images){
-        if(typeof req.body.images === 'string'){
-            images.push(req.body.images)
+    try{
+        if(req.body.images){
+            if(typeof req.body.images === 'string'){
+                images.push(req.body.images)
+            }
+            else{
+                images = req.body.images
+            }
+            let imageLinks = [];
+            console.log(req.body);
+            for(let i=0;i<images.length;i++){
+              const result = await cloudinary.v2.uploader.upload(images[i],{
+                folder:'petstore'
+              });
+              imageLinks.push({
+                public_id : result.public_id,
+                url : result.secure_url
+              })
+            }
+            const product = await Product.create({
+                name: req.body.name,
+                price : req.body.price,
+                description: req.body.description,
+                category : req.body.category,
+                ratings: 0,
+                images: {
+                    public_id: imageLinks.public_id,
+                    url: (imageLinks[0].url)?imageLinks[0].url:"https://res.cloudinary.com/dzigorjli/image/upload/v1667126506/avatars/default_avatar_mzcyda.jpg"
+                },
+                animal : req.body.animal,
+                stock : req.body.stock,
+                seller : req.body.seller
+            
+            })
+            console.log("DONE");
+            res.status(201).json({
+                success: true,
+                product
+            })
         }
         else{
-            images = req.body.images
+            const product = await Product.create({
+                name: req.body.name,
+                price : req.body.price,
+                description: req.body.description,
+                category : req.body.category,
+                ratings: 0,
+                images: {
+                    url:"https://res.cloudinary.com/dzigorjli/image/upload/v1667126506/avatars/default_avatar_mzcyda.jpg"
+                },
+                animal : req.body.animal,
+                stock : req.body.stock,
+                seller : req.body.seller
+            
+            })
+            console.log("DONE");
+            res.status(201).json({
+                success: true,
+                product
+            })
         }
-        let imageLinks = [];
-        console.log(req.body);
-        for(let i=0;i<images.length;i++){
-          const result = await cloudinary.v2.uploader.upload(images[i],{
-            folder:'petstore'
-          });
-          imageLinks.push({
-            public_id : result.public_id,
-            url : result.secure_url
-          })
-        }
-        const product = await Product.create({
-            name: req.body.name,
-            price : req.body.price,
-            description: req.body.description,
-            category : req.body.category,
-            ratings: 0,
-            images: {
-                public_id: imageLinks.public_id,
-                url: (imageLinks[0].url)?imageLinks[0].url:"https://res.cloudinary.com/dzigorjli/image/upload/v1667126506/avatars/default_avatar_mzcyda.jpg"
-            },
-            animal : req.body.animal,
-            stock : req.body.stock,
-            seller : req.body.seller
-        
-        })
-        console.log("DONE");
-        res.status(201).json({
-            success: true,
-            product
-        })
     }
-    else{
-        const product = await Product.create({
-            name: req.body.name,
-            price : req.body.price,
-            description: req.body.description,
-            category : req.body.category,
-            ratings: 0,
-            images: {
-                url:"https://res.cloudinary.com/dzigorjli/image/upload/v1667126506/avatars/default_avatar_mzcyda.jpg"
-            },
-            animal : req.body.animal,
-            stock : req.body.stock,
-            seller : req.body.seller
-        
-        })
-        console.log("DONE");
-        res.status(201).json({
-            success: true,
-            product
-        })
+    catch(e){
+        console.log(e);
     }
+   
    
 })
 
 
+
+
 //get all products => /api/v1/products 
 exports.getProducts = catchAsyncErrors(async (req,res,next) =>{
-   
     const resPerPage = 10;
     const productsCount = await Product.countDocuments();
     
@@ -122,19 +127,32 @@ exports.getProducts = catchAsyncErrors(async (req,res,next) =>{
                         .search()
                         .filter()
                         // .pagination(resPerPage)
-    let products = await apiFeatures.query;
-    let filteredProductCount = products.length;
-    apiFeatures.pagination(resPerPage )
-    products = await apiFeatures.query.clone();
-    
-        res.status(200).json({
-            success: true,
-            productsCount,
-            resPerPage,
-            filteredProductCount,
-            products
-        })
+    try{
+        const cached_data=await client.get("products");
+        if(cached_data){
+            console.log("Data is coming from redis")
+            res.status(200).json(JSON.parse(cached_data))
+        }
+        else{
+            console.log("Data is not coming from redis")
+            let products = await apiFeatures.query;
+            let filteredProductCount = products.length;
+            apiFeatures.pagination(resPerPage )
+            products = await apiFeatures.query.clone();
+             client.set("products",JSON.stringify(products))
+            res.status(200).json({
+                success: true,
+                productsCount,
+                resPerPage,
+                filteredProductCount,
+                products
+            })
 
+        }
+    }catch(error){
+        res.status(500).json(error)
+        console.log(error);
+    }
     
     
 })
@@ -182,6 +200,7 @@ exports.getSingleProduct = catchAsyncErrors(async(req,res,next)=>{
 
 //update Product => /api/v1/admin/product/:id
 exports.updateProduct = catchAsyncErrors(async(req,res,next) =>{
+    client.del("products")
     console.log("I'm in Update");
     let product =await Product.findById(req.params.id)
     console.log(product);
@@ -241,7 +260,7 @@ exports.updateProduct = catchAsyncErrors(async(req,res,next) =>{
 
 //Delete Product => /api/v1/admin/product/:id
 exports.deleteProduct = catchAsyncErrors(async(req,res,next)=>{
-
+    client.del("products")
     const product = await Product.findById(req.params.id);
 
     if(!product){
@@ -265,7 +284,8 @@ exports.deleteProduct = catchAsyncErrors(async(req,res,next)=>{
 
 // create new review   => /api/v1/review
 exports.createProductReview = catchAsyncErrors( async (req, res, next) => {
-   const { rating, comment, productId} = req.body;
+    client.del("products")
+    const { rating, comment, productId} = req.body;
     const review = {
         user: req.body.userId,
         name: req.body.userName,
@@ -299,6 +319,7 @@ exports.createProductReview = catchAsyncErrors( async (req, res, next) => {
   })
   // delete product reviews   => /api/v1/ reviews
   exports.deleteReview = catchAsyncErrors(async (req,res,next) => {
+    client.del("products")
     const product = await Product.findById(req.query.productId);
     console.log(product);
     const reviews = product.reviews.filter( review => review._id.toString()  !== req.query.id.
