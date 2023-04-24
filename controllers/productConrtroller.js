@@ -44,7 +44,7 @@ const client = require('../config/redis');
 // Create new product => /api/v1/admin/product/new
 exports.newProduct = catchAsyncErrors(async(req,res,next) => {
     console.log("****************************** Create New Product *************************");
-    // client.del("products")
+    client.del("products")
     let images = []
     try{
         if(req.body.images){
@@ -127,19 +127,28 @@ exports.getProducts = catchAsyncErrors(async (req,res,next) =>{
                         .search()
                         .filter()
                         // .pagination(resPerPage)
-    // try{
-        // const cached_data=await client.get("products");
-        // if(cached_data){
-        //     console.log("Data is coming from redis")
-        //     res.status(200).json(JSON.parse(cached_data))
-        // }
-        // else{
-            // console.log("Data is not coming from redis")
+    try{
+        const cached_data=await client.get("products");
+        if(cached_data){
+            console.log("Data is coming from redis")
+            res.status(200).json(JSON.parse(cached_data))
+        }
+        else{
+            console.log("Data is not coming from redis")
             let products = await apiFeatures.query;
             let filteredProductCount = products.length;
             apiFeatures.pagination(resPerPage )
             products = await apiFeatures.query.clone();
-             client.set("products",JSON.stringify(products))
+            const val = {
+                
+                    success: true,
+                    productsCount,
+                    resPerPage,
+                    filteredProductCount,
+                    products
+                
+            };
+            client.set("products",JSON.stringify(val))
             res.status(200).json({
                 success: true,
                 productsCount,
@@ -148,11 +157,11 @@ exports.getProducts = catchAsyncErrors(async (req,res,next) =>{
                 products
             })
 
-        // }
-    // }catch(error){
-    //     res.status(500).json(error)
-    //     console.log(error);
-    // }
+        }
+    }catch(error){
+        res.status(500).json(error)
+        console.log(error);
+    }
     
     
 })
@@ -200,7 +209,7 @@ exports.getSingleProduct = catchAsyncErrors(async(req,res,next)=>{
 
 //update Product => /api/v1/admin/product/:id
 exports.updateProduct = catchAsyncErrors(async(req,res,next) =>{
-    // client.del("products")
+    client.del("products")
     console.log("I'm in Update");
     let product =await Product.findById(req.params.id)
     console.log(product);
@@ -260,7 +269,7 @@ exports.updateProduct = catchAsyncErrors(async(req,res,next) =>{
 
 //Delete Product => /api/v1/admin/product/:id
 exports.deleteProduct = catchAsyncErrors(async(req,res,next)=>{
-    // client.del("products")
+    client.del("products")
     const product = await Product.findById(req.params.id);
 
     if(!product){
@@ -284,7 +293,7 @@ exports.deleteProduct = catchAsyncErrors(async(req,res,next)=>{
 
 // create new review   => /api/v1/review
 exports.createProductReview = catchAsyncErrors( async (req, res, next) => {
-    // client.del("products")
+    client.del("products")
     const { rating, comment, productId} = req.body;
     const review = {
         user: req.body.userId,
@@ -319,7 +328,7 @@ exports.createProductReview = catchAsyncErrors( async (req, res, next) => {
   })
   // delete product reviews   => /api/v1/ reviews
   exports.deleteReview = catchAsyncErrors(async (req,res,next) => {
-    // client.del("products")
+    client.del("products")
     const product = await Product.findById(req.query.productId);
     console.log(product);
     const reviews = product.reviews.filter( review => review._id.toString()  !== req.query.id.

@@ -464,3 +464,8 @@
 ::ffff:127.0.0.1 - - [24/Apr/2023:17:51:20 +0000] "GET /api/v1/admin/user/643f91ea5dc7a472b59b547c HTTP/1.1" 200 340 "-" "-"
 ::1 - - [24/Apr/2023:17:51:31 +0000] "GET /api/v1/products HTTP/1.1" 200 5260 "-" "PostmanRuntime/7.32.2"
 ::1 - - [24/Apr/2023:17:51:35 +0000] "GET /api/v1/products HTTP/1.1" 200 5260 "-" "PostmanRuntime/7.32.2"
+::1 - - [24/Apr/2023:19:02:52 +0000] "GET /api/v1/products HTTP/1.1" 200 5260 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+::1 - - [24/Apr/2023:19:02:53 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:4000/api/v1/products" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+::1 - - [24/Apr/2023:19:02:53 +0000] "GET /images/icons/gear.png HTTP/1.1" 404 160 "http://localhost:4000/api/v1/products" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+::1 - - [24/Apr/2023:19:10:07 +0000] "GET /api/v1/products HTTP/1.1" 200 5260 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+::1 - - [24/Apr/2023:19:10:07 +0000] "GET /images/icons/gear.png HTTP/1.1" 404 160 "http://localhost:4000/api/v1/products" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
