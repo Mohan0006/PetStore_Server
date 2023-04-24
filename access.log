@@ -441,3 +441,6 @@
 ::1 - - [24/Apr/2023:17:13:22 +0000] "POST /api/v1/admin/product/new HTTP/1.1" 201 437 "-" "PostmanRuntime/7.32.2"
 ::1 - - [24/Apr/2023:17:13:32 +0000] "POST /api/v1/admin/product/new HTTP/1.1" 201 437 "-" "PostmanRuntime/7.32.2"
 ::1 - - [24/Apr/2023:17:13:38 +0000] "GET /api/v1/products HTTP/1.1" 200 5260 "-" "PostmanRuntime/7.32.2"
+::1 - - [24/Apr/2023:17:28:47 +0000] "GET /api/v1/products HTTP/1.1" 200 5171 "-" "PostmanRuntime/7.32.2"
+::1 - - [24/Apr/2023:17:28:53 +0000] "POST /api/v1/admin/product/new HTTP/1.1" 201 437 "-" "PostmanRuntime/7.32.2"
+::1 - - [24/Apr/2023:17:29:03 +0000] "GET /api/v1/products HTTP/1.1" 200 5260 "-" "PostmanRuntime/7.32.2"

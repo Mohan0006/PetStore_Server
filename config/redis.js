@@ -1,9 +1,11 @@
 const redis = require('redis');
+
+
 const client = redis.createClient({
-    password: '5MuV35lkrHkJtAhBmWjwfUjjRibt1cHO',
+    password: 'ZipWfWo5GCs3GxCZAvF0bdUxjQkeVhxr',
     socket: {
-        host: 'redis-12187.c282.east-us-mz.azure.cloud.redislabs.com',
-        port: 12187
+        host: 'redis-13243.c56.east-us.azure.cloud.redislabs.com',
+        port: 13243
     }
 });
 client.connect();
