@@ -134,7 +134,7 @@ exports.getProducts = catchAsyncErrors(async (req,res,next) =>{
         if(cached_data){
             console.log("Data is coming from redis")
             res.status(200).json(JSON.parse(cached_data))
-        }
+        }   
        
         else{
             console.log("Data is not coming from redis")
