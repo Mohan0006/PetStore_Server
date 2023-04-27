@@ -129,7 +129,7 @@ exports.getProducts = catchAsyncErrors(async (req,res,next) =>{
                         // .pagination(resPerPage)
     console.log(req.query);
     try{
-       if(req.query){
+       if(!req.query){
         const cached_data=await client.get("products");
         if(cached_data){
             console.log("Data is coming from redis")
