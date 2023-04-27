@@ -127,12 +127,15 @@ exports.getProducts = catchAsyncErrors(async (req,res,next) =>{
                         .search()
                         .filter()
                         // .pagination(resPerPage)
+    console.log(req.query);
     try{
+       if(req.query){
         const cached_data=await client.get("products");
         if(cached_data){
             console.log("Data is coming from redis")
             res.status(200).json(JSON.parse(cached_data))
         }
+       
         else{
             console.log("Data is not coming from redis")
             let products = await apiFeatures.query;
@@ -156,7 +159,37 @@ exports.getProducts = catchAsyncErrors(async (req,res,next) =>{
                 filteredProductCount,
                 products
             })
-
+        }
+        
+        }
+        else{
+            const cached_data=await client.get("products");
+            if(cached_data){
+                client.del("products")
+            }
+            client.del("products")
+            console.log("Data is not coming from redis")
+            let products = await apiFeatures.query;
+            let filteredProductCount = products.length;
+            apiFeatures.pagination(resPerPage )
+            products = await apiFeatures.query.clone();
+            const val = {
+                
+                    success: true,
+                    productsCount,
+                    resPerPage,
+                    filteredProductCount,
+                    products
+                
+            };
+            client.set("products",JSON.stringify(val))
+            res.status(200).json({
+                success: true,
+                productsCount,
+                resPerPage,
+                filteredProductCount,
+                products
+            })
         }
     }catch(error){
         res.status(500).json(error)

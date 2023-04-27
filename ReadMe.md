@@ -2,7 +2,6 @@
 # Project      : PetStore (An Online Shopping Platform for Pet products)
 
 
-
 # **************************** INITIALIZE AND RUN CODE (LOCAL MACHINE)  *******************************  
 
 1. Extract the Zip File 
@@ -49,3 +48,9 @@ server will start at localhost:4000
   1. Open the url in the browser : https://petstore-webapp.onrender.com (Deployed On Render)
   
   2. Open the url in the browser : https://petstore-client.azurewebsites.net/ (Deployed On Azure)
+
+
+# ***************** GITHUB REPOSITORIES ************************
+
+1. Frontend/Client Code : https://github.com/Mohan0006/PetStore_Client
+2. Backend/Server Code  : https://github.com/Mohan0006/PetStore_Server
