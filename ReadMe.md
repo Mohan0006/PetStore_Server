@@ -1,12 +1,5 @@
-# Group Number : 15
-# Project      : PetStore (An Online Shopping Platform for Pet products)
 
-
-# **************************** INITIALIZE AND RUN CODE (LOCAL MACHINE)  *******************************  
-
-1. Extract the Zip File 
-
-# =======> BACKEND/SERVER
+# ***INITIALIZE AND RUN CODE (LOCAL MACHINE)***
 
 1. Open the backend folder in the VS Code
 
